@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_tab_friends"
+        android:enabled="true"
+        android:icon="@drawable/ic_friends"
+        android:checked="true"
+        android:title=""
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_tab_messages"
+        android:enabled="true"
+        android:icon="@drawable/ic_message"
+        android:title=""
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_tab_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_search"
+        android:title=""
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_tab_setting"
+        android:enabled="true"
+        android:icon="@drawable/ic_setting"
+        android:title=""
+        app:showAsAction="ifRoom" />
+</menu>
