@@ -2,26 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_tab_friends"
+        android:id="@+id/navigation_friends"
         android:enabled="true"
         android:icon="@drawable/ic_friends"
         android:checked="true"
         android:title=""
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_tab_messages"
+        android:id="@+id/navigation_messages"
         android:enabled="true"
         android:icon="@drawable/ic_message"
         android:title=""
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_tab_search"
+        android:id="@+id/navigation_search"
         android:enabled="true"
         android:icon="@drawable/ic_search"
         android:title=""
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/menu_tab_setting"
+        android:id="@+id/navigation_setting"
         android:enabled="true"
         android:icon="@drawable/ic_setting"
         android:title=""
