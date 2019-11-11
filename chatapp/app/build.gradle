@@ -38,5 +38,5 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.0.0'
     implementation 'androidx.navigation:navigation-ui:2.0.0'
     // new library in below
-
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 }
