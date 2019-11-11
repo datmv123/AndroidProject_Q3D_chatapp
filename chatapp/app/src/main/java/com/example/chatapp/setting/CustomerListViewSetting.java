@@ -48,8 +48,8 @@ public class CustomerListViewSetting extends BaseAdapter {
         }
         SettingOb ob  = list.get(position);
 
-        photo = convertView.findViewById(R.id.photo);
-        TextView name=convertView.findViewById(R.id.name);
+        photo = convertView.findViewById(R.id.profileImage);
+        TextView name=convertView.findViewById(R.id.txtProfileName);
         Switch aSwitch =convertView.findViewById(R.id.switch1);
         //photo
 

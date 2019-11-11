@@ -47,8 +47,8 @@ public class CustomerListAdapter extends BaseAdapter {
         }
         User user  = list.get(position);
 
-        photo = convertView.findViewById(R.id.photo);
-        TextView name=convertView.findViewById(R.id.name);
+        photo = convertView.findViewById(R.id.profileImage);
+        TextView name=convertView.findViewById(R.id.txtProfileName);
         status=convertView.findViewById(R.id.option);
         loadImgFromUrl(user.getImgUrl(),photo);
 
