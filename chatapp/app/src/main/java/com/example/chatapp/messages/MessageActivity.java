@@ -3,6 +3,7 @@ package com.example.chatapp.messages;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NavUtils;
 
 import com.example.chatapp.R;
 import com.example.chatapp.messages.constant.DatabaseName;
@@ -26,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,7 +82,7 @@ public class MessageActivity extends AppCompatActivity {
             }
             showMessage = convertView.findViewById(R.id.showMessage);
             if (profileImage != null) {
-                profileImage.setImageResource(R.mipmap.ic_launcher);
+                loadImgFromUrl(imageUrl, profileImage);
             }
 
             showMessage.setText(messageDetail.getContent());
@@ -95,30 +98,45 @@ public class MessageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         friendsUID = intent.getStringExtra("friendId");
+        String friendName = intent.getStringExtra("friendName");
+        imageUrl = intent.getStringExtra("imageUrl");
         currUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        //back to message list screen
-        toolbar.setNavigationOnClickListener(v -> finish());
-        //
-        title = findViewById(R.id.textTitle);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setTitle("");
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        //back to message list screen
+//        toolbar.setNavigationOnClickListener(v -> finish());
+//        //
+//        title = findViewById(R.id.textTitle);
 
         findViewById(R.id.buttonSend).setOnClickListener(t -> sendMessage());
         textSend = findViewById(R.id.textSend);
         listView = findViewById(R.id.listViewMessageDetail);
         listView.setDivider(null);
         listView.setAdapter(messageAdapter);
-        loadFriendInfo();
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(friendName);
+
         showMessage();
     }
 
-    private void loadFriendInfo() {
-        title.setText("Friend's name");
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void loadImgFromUrl(String url,ImageView imageView){
+        Picasso.get().load(url).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(imageView);
     }
 
     private void sendMessage() {
@@ -145,7 +163,7 @@ public class MessageActivity extends AppCompatActivity {
                                 .map(t -> t.getValue(MessageDetail.class))
                                 .filter(t -> t.getReceiverUID().equals(currUID) && t.getSenderUID().equals(friendsUID)
                                         || t.getReceiverUID().equals(friendsUID) && t.getSenderUID().equals(currUID))
-                                .sorted((a, b) -> Long.compare(a.getSendTime(), b.getSendTime()))
+                                .sorted((a, b) -> a.getSendTime() - b.getSendTime() > 0 ? 1 : -1)
                                 .collect(Collectors.toList());
                         messageDetails.addAll(data);
                         messageAdapter.notifyDataSetChanged();

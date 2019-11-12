@@ -1,23 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="false"
-    android:focusableInTouchMode="false">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/topSearch"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentStart="true"
         android:background="?attr/backgroundcolor"
         android:padding="5dp">
 
         <EditText
             android:id="@+id/textSearch"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="32dp"
             android:layout_toLeftOf="@id/buttonSearch"
             android:background="?attr/backgroundcolor"
             android:hint="Type a username..."
@@ -29,16 +27,15 @@
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/ic_search" />
-
     </RelativeLayout>
-
     <ListView
         android:id="@+id/listViewSearchUser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topSearch"
-        android:descendantFocusability="blocksDescendants"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
+        android:layout_below="@id/topSearch"
+        android:layout_margin="5dp"
+        android:descendantFocusability="blocksDescendants" />
 </RelativeLayout>
