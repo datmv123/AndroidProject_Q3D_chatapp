@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
@@ -49,6 +51,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.oned.MultiFormatUPCEANReader;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 import com.squareup.picasso.Picasso;
 
 
@@ -110,7 +118,6 @@ public class SettingFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get the selected item text from ListView
-                System.out.println("hello click");
                 switch (list.get(position).getId()){
                     case 1:{
 
@@ -121,7 +128,21 @@ public class SettingFragment extends Fragment {
                         showDialog(user);
                         break;
                     }
-                    case 3:
+                    case 3: {
+                        LayoutInflater inflater = getLayoutInflater();
+                        View alertLayout = inflater.inflate(R.layout.qr_alert_dialog, null);
+                        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                        alert.setTitle("Your QR Code");
+                        alert.setView(alertLayout);
+                        alert.setCancelable(false);
+                        Button btnOk = alertLayout.findViewById(R.id.btnOk);
+                        ImageView imageView = alertLayout.findViewById(R.id.imageQR);
+                        createQR(imageView);
+                        AlertDialog dialog = alert.create();
+                        btnOk.setOnClickListener(v-> dialog.cancel());
+                        dialog.show();
+                        break;
+                    }
                     case 4: signOut(); break;
                 }
 
@@ -192,6 +213,7 @@ public class SettingFragment extends Fragment {
         Picasso.get().load(url).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(imageView);
     }
     public void signOut(){
+        reference.child("status").setValue("offline");
         FirebaseAuth.getInstance().signOut();
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id)).requestEmail().build();
@@ -244,13 +266,24 @@ public class SettingFragment extends Fragment {
 
             }
         });
+
         AlertDialog dialog = alert.create();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.rgb(255,255,255));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.rgb(255,255,255));
         dialog.show();
+
     }
 
-    public void restartApp(){
-        Intent i = new Intent(getActivity().getApplicationContext(),MainActivity.class);
-        startActivity(i);
-
+    public void createQR (ImageView imageView){
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = multiFormatWriter.encode(firebaseUser.getUid(), BarcodeFormat.QR_CODE,300,300);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap  bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            imageView.setImageBitmap(bitmap);
+        }
+        catch (WriterException e) {
+            e.printStackTrace();
+        }
     }
 }
