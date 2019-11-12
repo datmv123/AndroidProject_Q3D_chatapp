@@ -44,6 +44,7 @@ public class  FriendsFragment extends Fragment {
         email = view.findViewById(R.id.txtProfileEmail);
         avatar = view.findViewById(R.id.profileImage);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        System.out.println(firebaseUser.getDisplayName());
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -71,10 +72,6 @@ public class  FriendsFragment extends Fragment {
 
             }
         });
-
-
-
-
 
         return view;
     }

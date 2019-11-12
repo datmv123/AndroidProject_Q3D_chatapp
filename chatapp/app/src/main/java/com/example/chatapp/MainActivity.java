@@ -40,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
 
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuth.signInWithEmailAndPassword( "admin@123.com",  "admin@123").addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Toast.makeText(MainActivity.this, "Login sucessful", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(MainActivity.this, "Login fail", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+//        firebaseAuth.signInWithEmailAndPassword( "admin@123.com",  "admin@123").addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                Toast.makeText(MainActivity.this, "Login sucessful", Toast.LENGTH_SHORT).show();
+//            }else{
+//                Toast.makeText(MainActivity.this, "Login fail", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
 }

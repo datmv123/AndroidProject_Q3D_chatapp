@@ -37,20 +37,22 @@ public class Login extends AppCompatActivity {
      static final int GOOGLE_SIGNIN= 123;
      FirebaseAuth mAuth;
      Button btnLogin;
-     Button btnLogout;
-     GoogleSignInClient googleSignInClient;
+     Button btnLogout; GoogleSignInClient googleSignInClient;
+
      DatabaseReference reference;
      FirebaseUser firebaseUser;
 
     @Override
     protected void onStart() {
         super.onStart();
-//        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//        if(firebaseUser!=null){
-//            Intent intent = new Intent(this,MainActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser!=null){
+            System.out.println("1:"+firebaseUser.getDisplayName());
+            Intent intent = new Intent(this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     @Override
