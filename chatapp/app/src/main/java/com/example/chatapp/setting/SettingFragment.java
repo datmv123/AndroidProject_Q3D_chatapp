@@ -18,11 +18,13 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import com.example.chatapp.MainActivity;
@@ -75,6 +77,7 @@ public class SettingFragment extends Fragment {
          photo = view.findViewById(R.id.profileImage);
          txtUsername = view.findViewById(R.id.txtProfileName);
          firebaseUser  = FirebaseAuth.getInstance().getCurrentUser();
+
          //get user
         reference = FirebaseDatabase.getInstance().
                 getReference("users").child(firebaseUser.getUid());
@@ -107,9 +110,13 @@ public class SettingFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get the selected item text from ListView
-
+                System.out.println("hello click");
                 switch (list.get(position).getId()){
-                    case 1:break;
+                    case 1:{
+
+                        System.out.println("haha");
+                        break;
+                    }
                     case 2: {
                         showDialog(user);
                         break;
@@ -241,4 +248,9 @@ public class SettingFragment extends Fragment {
         dialog.show();
     }
 
+    public void restartApp(){
+        Intent i = new Intent(getActivity().getApplicationContext(),MainActivity.class);
+        startActivity(i);
+
+    }
 }

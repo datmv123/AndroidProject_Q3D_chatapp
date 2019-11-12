@@ -35,7 +35,9 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="username"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                     android:textColor="?attr/textcolor"
+                    />
 
 
                 <Switch
@@ -45,7 +47,9 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginTop="15dp"
-                    android:layout_marginRight="20dp" />
+                    android:layout_marginRight="20dp"
+                    android:textColor="?attr/textcolor"
+                    />
 
 
             </RelativeLayout>

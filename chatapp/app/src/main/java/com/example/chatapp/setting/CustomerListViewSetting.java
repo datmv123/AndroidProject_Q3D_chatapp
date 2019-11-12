@@ -5,9 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.chatapp.R;
 
@@ -52,8 +55,24 @@ public class CustomerListViewSetting extends BaseAdapter {
         TextView name=convertView.findViewById(R.id.txtProfileName);
         Switch aSwitch =convertView.findViewById(R.id.switch1);
         //photo
-
-
+                        if(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES){
+                            context.setTheme(R.style.darkthem);
+                            aSwitch.setChecked(true);
+                        }
+                        else context.setTheme(R.style.AppTheme);
+        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    System.out.println("checked");
+                }
+                else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    System.out.println("unchcked");
+                }
+            }
+        });
          photo.setImageResource(ob.getIcon());
          if(ob.getId()==1)
            aSwitch.setVisibility(View.VISIBLE);

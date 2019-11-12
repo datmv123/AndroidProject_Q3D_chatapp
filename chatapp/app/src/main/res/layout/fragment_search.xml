@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:background="@color/white"
+        android:background="?attr/backgroundcolor"
         android:padding="5dp">
 
         <EditText
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/buttonSearch"
-            android:background="@android:color/transparent"
+            android:background="?attr/backgroundcolor"
             android:hint="Type a username..."
             android:inputType="text" />
 
