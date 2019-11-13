@@ -3,6 +3,8 @@ package com.example.chatapp.messages;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +20,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 
+import com.example.chatapp.MainActivity;
 import com.example.chatapp.R;
 import com.example.chatapp.messages.constant.DatabaseName;
 import com.example.chatapp.messages.model.MessageDetail;
+import com.example.chatapp.service.CallManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -102,17 +106,6 @@ public class MessageActivity extends AppCompatActivity {
         imageUrl = intent.getStringExtra("imageUrl");
         currUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setTitle("");
-//        getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        //back to message list screen
-//        toolbar.setNavigationOnClickListener(v -> finish());
-//        //
-//        title = findViewById(R.id.textTitle);
-
         findViewById(R.id.buttonSend).setOnClickListener(t -> sendMessage());
         textSend = findViewById(R.id.textSend);
         listView = findViewById(R.id.listViewMessageDetail);
@@ -130,6 +123,8 @@ public class MessageActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+            case R.id.menuItemCall:
+                CallManager.doCall(friendsUID);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -174,5 +169,12 @@ public class MessageActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.top_bar_message_screen, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
