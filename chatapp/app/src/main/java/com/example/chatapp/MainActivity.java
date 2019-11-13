@@ -37,5 +37,9 @@ public class MainActivity extends AppCompatActivity {
 //        CallManager.releaseListener();
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CallManager.setUp(this);
+    }
 }

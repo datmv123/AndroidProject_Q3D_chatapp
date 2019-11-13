@@ -17,16 +17,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NavUtils;
 
-import com.example.chatapp.MainActivity;
 import com.example.chatapp.R;
 import com.example.chatapp.messages.constant.DatabaseName;
 import com.example.chatapp.messages.model.MessageDetail;
 import com.example.chatapp.service.CallManager;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,20 +38,18 @@ import java.util.stream.StreamSupport;
 
 public class MessageActivity extends AppCompatActivity {
 
+    private String imageUrl;
     private String friendsUID;
     private String currUID;
+    private String friendName;
 
-    private TextView title;
     private EditText textSend;
     private ListView listView;
     private List<MessageDetail> messageDetails = new ArrayList<>();
-    private String imageUrl;
-
     private BaseAdapter messageAdapter = new BaseAdapter() {
 
         Activity parentActivity = MessageActivity.this;
         List<MessageDetail> messageDetails = MessageActivity.this.messageDetails;
-        String imageUrl = MessageActivity.this.imageUrl;
 
         @Override
         public int getCount() {
@@ -88,9 +82,7 @@ public class MessageActivity extends AppCompatActivity {
             if (profileImage != null) {
                 loadImgFromUrl(imageUrl, profileImage);
             }
-
             showMessage.setText(messageDetail.getContent());
-
             return convertView;
         }
     };
@@ -102,8 +94,9 @@ public class MessageActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         friendsUID = intent.getStringExtra("friendId");
-        String friendName = intent.getStringExtra("friendName");
+        friendName = intent.getStringExtra("friendName");
         imageUrl = intent.getStringExtra("imageUrl");
+
         currUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         findViewById(R.id.buttonSend).setOnClickListener(t -> sendMessage());
@@ -126,14 +119,14 @@ public class MessageActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.menuItemCall:
-                CallManager.doCall(friendsUID);
+                CallManager.doCall(friendsUID, friendName);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void loadImgFromUrl(String url,ImageView imageView){
+    public void loadImgFromUrl(String url, ImageView imageView) {
         Picasso.get().load(url).placeholder(R.drawable.ic_launcher_background).error(R.drawable.ic_launcher_background).into(imageView);
     }
 

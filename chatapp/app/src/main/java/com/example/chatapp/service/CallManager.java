@@ -4,12 +4,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialog;
 
 import com.example.chatapp.R;
+import com.example.chatapp.messages.constant.DatabaseName;
+import com.example.chatapp.messages.model.UserInfo;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.Sinch;
 import com.sinch.android.rtc.SinchClient;
@@ -27,13 +34,14 @@ public final class CallManager {
 
     private static Context context;
 
-    public static void doCall(String friendUID) {
+    public static void doCall(String friendUID,String friendName) {
         call = sinchClient.getCallClient().callUser(friendUID);
         call.addCallListener(new SinchCallListener());
         // open caller dialog
-        AlertDialog alertDialog = new AlertDialog.Builder(context, R.style.Theme_AppCompat).create();
-        alertDialog.setTitle("Alert");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,"Cancel", new DialogInterface.OnClickListener() {
+        MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(context);
+        alertDialog.setTitle("Calling: "+friendName);
+
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -59,10 +67,23 @@ public final class CallManager {
             @Override
             public void onIncomingCall(CallClient callClient, Call incomingCall) {
                 MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(context);
-                alertDialog.setTitle("Calling");
+                alertDialog.setTitle("Incoming call ...");
                 String userUID = incomingCall.getCallId();
-                alertDialog.setMessage(userUID);
-                alertDialog.setNeutralButton("Reject", new DialogInterface.OnClickListener() {
+                alertDialog.setMessage("");
+                FirebaseDatabase.getInstance().getReference(DatabaseName.DB_USERS)
+                        .child(userUID).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                        alertDialog.setMessage(user.getUsername());
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                alertDialog.setNegativeButton("Reject", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -76,6 +97,7 @@ public final class CallManager {
                         call.answer();
                         call.addCallListener(new SinchCallListener());
                         Toast.makeText(context, "Call started...", Toast.LENGTH_LONG).show();
+                        dialog.dismiss();
                     }
                 });
                 alertDialog.show();

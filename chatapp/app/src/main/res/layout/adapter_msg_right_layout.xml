@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_width="300dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -18,7 +18,7 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/background_message_right"
             android:padding="8dp"
-            android:text=""
+            android:text="sample text"
             android:textColor="#fff"
             android:textSize="18sp" />
 
