@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        CallManager.setUp(this.getApplicationContext());
+        CallManager.setUp(this);
     }
 
     @Override

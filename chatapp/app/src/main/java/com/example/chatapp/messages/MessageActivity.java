@@ -115,6 +115,7 @@ public class MessageActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(friendName);
 
+        CallManager.setUp(this);
         showMessage();
     }
 
