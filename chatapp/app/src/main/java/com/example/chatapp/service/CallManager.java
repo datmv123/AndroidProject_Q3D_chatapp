@@ -31,16 +31,16 @@ public final class CallManager {
         call = sinchClient.getCallClient().callUser(friendUID);
         call.addCallListener(new SinchCallListener());
         // open caller dialog
-//        AlertDialog alertDialog = new AlertDialog.Builder(context, R.style.Theme_AppCompat).create();
-//        alertDialog.setTitle("Alert");
-//        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,"Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                call.hangup();
-//            }
-//        });
-//        alertDialog.show();
+        AlertDialog alertDialog = new AlertDialog.Builder(context, R.style.Theme_AppCompat).create();
+        alertDialog.setTitle("Alert");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,"Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                call.hangup();
+            }
+        });
+        alertDialog.show();
     }
 
     public static void setUp(Context context) {
