@@ -5,7 +5,9 @@ import android.content.DialogInterface;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialog;
 
+import com.example.chatapp.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.sinch.android.rtc.PushPair;
@@ -29,17 +31,16 @@ public final class CallManager {
         call = sinchClient.getCallClient().callUser(friendUID);
         call.addCallListener(new SinchCallListener());
         // open caller dialog
-        AlertDialog alertDialog = new MaterialAlertDialogBuilder(context).create();
-        alertDialog.setTitle("Alert");
-        alertDialog.setMessage("Calling...");
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                call.hangup();
-            }
-        });
-        alertDialog.show();
+//        AlertDialog alertDialog = new AlertDialog.Builder(context, R.style.Theme_AppCompat).create();
+//        alertDialog.setTitle("Alert");
+//        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,"Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//                call.hangup();
+//            }
+//        });
+//        alertDialog.show();
     }
 
     public static void setUp(Context context) {
@@ -57,18 +58,18 @@ public final class CallManager {
         sinchClient.getCallClient().addCallClientListener(new CallClientListener() {
             @Override
             public void onIncomingCall(CallClient callClient, Call incomingCall) {
-                AlertDialog alertDialog = new MaterialAlertDialogBuilder(context).create();
+                MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(context);
                 alertDialog.setTitle("Calling");
                 String userUID = incomingCall.getCallId();
                 alertDialog.setMessage(userUID);
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Reject", new DialogInterface.OnClickListener() {
+                alertDialog.setNeutralButton("Reject", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         call.hangup();
                     }
                 });
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Pick", new DialogInterface.OnClickListener() {
+                alertDialog.setPositiveButton("Pick", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         call = incomingCall;
