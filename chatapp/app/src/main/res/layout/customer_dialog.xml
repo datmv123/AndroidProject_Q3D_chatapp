@@ -25,6 +25,28 @@
 
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnCancelAp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:textColor="?attr/textcolor"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/btnSaveAp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?attr/textcolor"
+            android:text="Save" />
+    </LinearLayout>
+
 
 
 

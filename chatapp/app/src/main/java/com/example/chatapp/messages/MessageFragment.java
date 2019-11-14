@@ -53,6 +53,7 @@ public class MessageFragment extends Fragment {
             String friendId = ((UserInfo) listView.getAdapter().getItem(position)).getId();
             String friendName = ((UserInfo) listView.getAdapter().getItem(position)).getUsername();
             String imageUrl = ((UserInfo) listView.getAdapter().getItem(position)).getImgUrl();
+            System.out.println(imageUrl);
             Intent intent = new Intent(MessageFragment.this.getContext(), MessageActivity.class);
             intent.putExtra("friendId", friendId);
             intent.putExtra("friendName", friendName);

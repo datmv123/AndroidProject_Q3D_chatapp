@@ -21,6 +21,15 @@
             android:text=""
             android:textColor="#fff"
             android:textSize="18sp" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:padding="8dp"
+            android:id="@+id/imageContent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content">
+
+        </ImageView>
 
     </RelativeLayout>
 

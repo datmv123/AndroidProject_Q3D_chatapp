@@ -116,9 +116,9 @@ public class Login extends AppCompatActivity {
                            hashMap.put("id", userid);
                            hashMap.put("username", firebaseUser.getDisplayName());
                            hashMap.put("imgUrl", firebaseUser.getPhotoUrl()+"");
-                           hashMap.put("status", "offline");
+                           hashMap.put("status", "online");
 
-
+                           System.out.println(" ko CO");
                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                @Override
                                public void onComplete(@NonNull Task<Void> task) {
@@ -133,6 +133,7 @@ public class Login extends AppCompatActivity {
                        }
                        //da có trong database => chuyển offline->online
                        else {
+                           System.out.println("DA CO");
                            reference.child("status").setValue("online");
                            Intent intent = new Intent(Login.this, MainActivity.class);
                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

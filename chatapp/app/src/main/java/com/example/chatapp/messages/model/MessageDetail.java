@@ -5,6 +5,15 @@ public class MessageDetail {
     private String receiverUID;
     private String content;
     private Long sendTime;
+    private String type ="";
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public MessageDetail() {
     }
