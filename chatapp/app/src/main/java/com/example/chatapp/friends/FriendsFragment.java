@@ -1,5 +1,6 @@
 package com.example.chatapp.friends;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.chatapp.MainActivity;
 import com.example.chatapp.R;
+import com.example.chatapp.messages.MessageActivity;
+import com.example.chatapp.messages.model.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,32 +36,58 @@ public class  FriendsFragment extends Fragment {
     private TextView email;
     private ImageView avatar;
     private FirebaseUser firebaseUser;
+    private User user;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
         customListView = view.findViewById(R.id.custom_list_view);
         userInfos = new ArrayList<>();
-
         username = view.findViewById(R.id.txtProfileName);
         email = view.findViewById(R.id.txtProfileEmail);
         avatar = view.findViewById(R.id.profileImage);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        System.out.println(firebaseUser.getDisplayName());
+        customListView.setOnItemClickListener((parent, view1, position, id) -> {
+            String friendId = ((User) customListView.getAdapter().getItem(position)).getId();
+            String friendName = ((User) customListView.getAdapter().getItem(position)).getUsername();
+            String imageUrl = ((User) customListView.getAdapter().getItem(position)).getImgUrl();
+            Intent intent = new Intent(this.getContext(), MessageActivity.class);
+            intent.putExtra("friendId", friendId);
+            intent.putExtra("friendName", friendName);
+            intent.putExtra("imageUrl", imageUrl);
+            this.getActivity().startActivity(intent);
+        });
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
+        //get current user
+        reference.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                user =  dataSnapshot.getValue(User.class);
+                username.setText(user.getUsername());
+                email.setText(firebaseUser.getEmail());
+                loadImgFromUrl(user.getImgUrl(),avatar);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        reference = FirebaseDatabase.getInstance().getReference("users");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                 for(DataSnapshot snapshot:dataSnapshot.getChildren()) {
-                     User user =  snapshot.getValue(User.class);
+                userInfos = new ArrayList<>();
 
-                     if(user.getId().equals(firebaseUser.getUid())){
-                         username.setText(user.getUsername());
-                         email.setText(firebaseUser.getEmail());
-                         loadImgFromUrl(user.getImgUrl(),avatar);
+
+                 for(DataSnapshot snapshot:dataSnapshot.getChildren()) {
+                     User user_item =  snapshot.getValue(User.class);
+                     for (String key : user.getFriends().keySet()) {
+                         if(key.equals(user_item.getId())) {
+                             userInfos.add(user_item);
+                         }
                      }
-                     else
-                       userInfos.add(user);
 
 
                  }

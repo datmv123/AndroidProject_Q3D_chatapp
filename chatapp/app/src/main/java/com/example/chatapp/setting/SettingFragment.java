@@ -229,24 +229,53 @@ public class SettingFragment extends Fragment {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.customer_dialog, null);
         final EditText etUsername =  alertLayout.findViewById(R.id.et_Username);
+        final Button btnCancel =  alertLayout.findViewById(R.id.btnCancelAp);
+        final  Button btnSave = alertLayout.findViewById(R.id.btnSaveAp);
         etUsername.setText(user.getUsername());
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setTitle("Update Username");
         alert.setView(alertLayout);
         alert.setCancelable(false);
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getActivity().getApplicationContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
-            }
+//        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//            }
+//        });
+//
+//        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                // code for matching password
+//                String username = etUsername.getText().toString();
+//                reference.child("username").setValue(username);
+//                reference.addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        User user = dataSnapshot.getValue(User.class);
+//                        txtUsername.setText(user.getUsername());
+//                        Toast.makeText(getContext(),"Updated Successfully!" , Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//
+//
+//            }
+     //   });
+
+        AlertDialog dialog = alert.create();
+        btnCancel.setOnClickListener(v-> {
+            dialog.cancel();
+            Toast.makeText(getActivity().getApplicationContext(), "Cancel clicked", Toast.LENGTH_SHORT).show();
         });
-
-        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // code for matching password
+        btnSave.setOnClickListener(v->{
                 String username = etUsername.getText().toString();
                 reference.child("username").setValue(username);
                 reference.addValueEventListener(new ValueEventListener() {
@@ -255,6 +284,7 @@ public class SettingFragment extends Fragment {
                         User user = dataSnapshot.getValue(User.class);
                         txtUsername.setText(user.getUsername());
                         Toast.makeText(getContext(),"Updated Successfully!" , Toast.LENGTH_SHORT).show();
+                        dialog.hide();
                     }
 
                     @Override
@@ -262,14 +292,8 @@ public class SettingFragment extends Fragment {
 
                     }
                 });
-
-
-            }
         });
 
-        AlertDialog dialog = alert.create();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.rgb(255,255,255));
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.rgb(255,255,255));
         dialog.show();
 
     }

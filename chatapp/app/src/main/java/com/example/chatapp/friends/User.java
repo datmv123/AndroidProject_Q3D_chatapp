@@ -1,10 +1,22 @@
 package com.example.chatapp.friends;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private String id;
     private String username;
     private String imgUrl;
     private String status;
+    private Map<String, String> friends = new HashMap<>(); // friendUID - date become friends
+
+    public Map<String, String> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Map<String, String> friends) {
+        this.friends = friends;
+    }
 
     public User(String id, String username, String status, String imgUrl) {
         this.id = id;

@@ -17,6 +17,7 @@
             android:layout_height="50dp"
             android:layout_marginRight="32dp"
             android:layout_toLeftOf="@id/buttonSearch"
+            android:textColor="?attr/textcolor"
             android:background="?attr/backgroundcolor"
             android:hint="Type a username..."
             android:inputType="text" />
