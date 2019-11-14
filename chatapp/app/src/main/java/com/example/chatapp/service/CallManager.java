@@ -6,9 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDialog;
 
-import com.example.chatapp.R;
 import com.example.chatapp.messages.constant.DatabaseName;
 import com.example.chatapp.messages.model.UserInfo;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -25,30 +23,38 @@ import com.sinch.android.rtc.calling.CallClient;
 import com.sinch.android.rtc.calling.CallClientListener;
 import com.sinch.android.rtc.calling.CallListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class CallManager {
 
     private static SinchClient sinchClient;
     private static Call call;
-
+    private static AlertDialog dialog;
     private static Context context;
 
-    public static void doCall(String friendUID,String friendName) {
-        call = sinchClient.getCallClient().callUser(friendUID);
-        call.addCallListener(new SinchCallListener());
-        // open caller dialog
-        MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(context);
-        alertDialog.setTitle("Calling: "+friendName);
+    public static void doCall(String friendUID, String friendName) {
+        try {
+            call = sinchClient.getCallClient().callUser(friendUID);
+            call.addCallListener(new SinchCallListener());
+            // open caller dialog
+            MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(context);
+            alertDialog.setTitle("Calling: " + friendName);
 
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                call.hangup();
-            }
-        });
-        alertDialog.show();
+            alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dia, int which) {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                        dialog = null;
+                    }
+                    call.hangup();
+                }
+            });
+            dialog = alertDialog.show();
+        } catch (Exception ex) {
+            Toast.makeText(context, "Something error", Toast.LENGTH_LONG).show();
+        }
     }
 
     public static void setUp(Context context) {
@@ -64,44 +70,96 @@ public final class CallManager {
         sinchClient.setSupportCalling(true);
         sinchClient.startListeningOnActiveConnection();
         sinchClient.getCallClient().addCallClientListener(new CallClientListener() {
+            private List<AlertDialog> dialogs = new ArrayList<>();
             @Override
             public void onIncomingCall(CallClient callClient, Call incomingCall) {
                 MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(context);
-                alertDialog.setTitle("Incoming call ...");
-                String userUID = incomingCall.getCallId();
-                alertDialog.setMessage("");
-                FirebaseDatabase.getInstance().getReference(DatabaseName.DB_USERS)
-                        .child(userUID).addValueEventListener(new ValueEventListener() {
+                String userUID = incomingCall.getRemoteUserId();
+                incomingCall.addCallListener(new CallListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        UserInfo user = dataSnapshot.getValue(UserInfo.class);
-                        alertDialog.setMessage(user.getUsername());
+                    public void onCallProgressing(Call caLL) {
+                        Toast.makeText(context, "Ring...", Toast.LENGTH_LONG).show();
+                        FirebaseDatabase.getInstance().getReference(DatabaseName.DB_USERS)
+                                .child(userUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                alertDialog.setNegativeButton("Reject", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dia, int which) {
+                                        dialogs.forEach(t -> t.dismiss());
+                                        incomingCall.hangup();
+                                        dialogs = new ArrayList<>();
+                                    }
+                                });
+                                alertDialog.setPositiveButton("Pick", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dia, int which) {
+                                        call = incomingCall;
+                                        call.answer();
+                                        call.addCallListener(new SinchCallListener());
+                                        Toast.makeText(context, "Call started...", Toast.LENGTH_LONG).show();
+                                        dialogs.forEach(t -> t.dismiss());
+                                        dialogs = new ArrayList<>();
+                                    }
+                                });
+                                UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                                alertDialog.setTitle("Incoming call... ");
+                                alertDialog.setMessage("From: " + user.getUsername());
+                                AlertDialog dialog = alertDialog.show();
+                                dialogs.add(dialog);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    public void onCallEstablished(Call call) {
+                        FirebaseDatabase.getInstance().getReference(DatabaseName.DB_USERS)
+                                .child(userUID).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                UserInfo user = dataSnapshot.getValue(UserInfo.class);
+                                MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(context);
+                                alertDialog.setTitle("From: " + user.getUsername());
 
+                                alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dia, int which) {
+                                        if (dialog != null) {
+                                            dialog.dismiss();
+                                            dialog = null;
+                                        }
+                                        call.hangup();
+                                    }
+                                });
+                                dialog = alertDialog.show();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
                     }
-                });
-                alertDialog.setNegativeButton("Reject", new DialogInterface.OnClickListener() {
+
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        call.hangup();
+                    public void onCallEnded(Call endCall) {
+                        Toast.makeText(context, "Call ended", Toast.LENGTH_LONG).show();
+                        call = null;
+                        endCall.hangup();
+                        dialogs.forEach(t -> t.dismiss());
+                        dialogs = new ArrayList<>();
                     }
-                });
-                alertDialog.setPositiveButton("Pick", new DialogInterface.OnClickListener() {
+
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        call = incomingCall;
-                        call.answer();
-                        call.addCallListener(new SinchCallListener());
-                        Toast.makeText(context, "Call started...", Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
+                    public void onShouldSendPushNotification(Call call, List<PushPair> list) {
                     }
                 });
-                alertDialog.show();
             }
+
         });
         sinchClient.start();
     }
@@ -128,6 +186,10 @@ public final class CallManager {
             Toast.makeText(context, "Call ended", Toast.LENGTH_LONG).show();
             call = null;
             endCall.hangup();
+            if (dialog != null) {
+                dialog.dismiss();
+                dialog = null;
+            }
         }
 
         @Override
